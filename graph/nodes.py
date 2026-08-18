@@ -128,3 +128,24 @@ def apply_event_consequences(
             )
         ),
     }
+
+def check_simulation(
+    state: CivilizationState
+) -> CivilizationState:
+
+    if state["population"] <= 0:
+        return {
+            **state,
+            "simulation_status": "collapsed",
+        }
+
+    if state["year"] >= state["simulation_end_year"]:
+        return {
+            **state,
+            "simulation_status": "completed",
+        }
+
+    return {
+        **state,
+        "simulation_status": "running",
+    }

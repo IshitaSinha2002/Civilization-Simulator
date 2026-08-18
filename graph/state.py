@@ -5,6 +5,7 @@ class CivilizationState(TypedDict):
     description: str
 
     year: int
+    simulation_end_year: int
 
     population: int
     food: int
