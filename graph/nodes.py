@@ -1,4 +1,5 @@
 from graph.state import CivilizationState
+from llm.chains import initial_civilization_chain, event_chain
 
 
 def simulate_year(state: CivilizationState) -> CivilizationState:
@@ -32,4 +33,25 @@ def simulate_year(state: CivilizationState) -> CivilizationState:
         "population": max(0, population),
         "food": max(0, food),
         "wealth": max(0, wealth),
+    }
+
+def generate_event(state: CivilizationState) -> CivilizationState:
+    event = event_chain.invoke(
+        {
+            "state": state
+        }
+    )
+
+    if event.event_type == "none":
+        return {
+            **state,
+            "current_event": "",
+        }
+
+    return {
+        **state,
+        "current_event": event.description,
+        "event_history": state["event_history"] + [
+            event.description
+        ],
     }
