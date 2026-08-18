@@ -72,3 +72,38 @@ Current civilization state: {state}
         ),
     ]
 )
+
+consequence_prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """
+You are the consequence engine for a civilization simulator.
+
+Analyze the historical event in the context of the civilization's
+current state.
+
+Determine realistic numerical changes caused by the event.
+
+Consider both direct and indirect consequences.
+
+Keep changes proportional to the significance of the event.
+Do not make extreme changes unless the event is extremely severe.
+
+Return zero for any attribute that should not meaningfully change.
+"""
+        ),
+        (
+            "human",
+            """
+Current civilization state:
+
+{state}
+
+Historical event:
+
+{event}
+"""
+        ),
+    ]
+)
