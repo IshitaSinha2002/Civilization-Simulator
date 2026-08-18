@@ -1,6 +1,9 @@
 from typing import TypedDict, List
 
 class CivilizationState(TypedDict):
+    civilization_name: str
+    description: str
+
     year: int
 
     population: int
