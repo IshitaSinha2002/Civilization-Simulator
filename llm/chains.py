@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
 from langchain_groq import ChatGroq
 
+from llm.prompts import initial_civilization_prompt, event_prompt
+
 class InitialCivilization(BaseModel):
     civilization_name: str = Field(
         description="Name of the civilization"
@@ -38,12 +40,37 @@ class InitialCivilization(BaseModel):
         description="Infrastructure development from 0 to 100"
     )
 
+class CivilizationEvent(BaseModel):
+    event_name: str = Field(
+        description="Name of the historical event"
+    )
+
+    description: str = Field(
+        description="Description of what happened"
+    )
+
+    event_type: str = Field(
+        description=(
+            "Type of event such as political, economic, military," 
+            "social, technological, environmental, or none"
+        )
+    )
+
+    significance: int = Field(
+        description="Significance of the event from 0 to 100"
+    )
 
 llm = ChatGroq(
     model="openai/gpt-oss-120b",
     temperature=0.7
 )
 
-initial_civilization_chain = llm.with_structured_output(
-    InitialCivilization
+initial_civilization_chain = (
+    initial_civilization_prompt
+    | llm.with_structured_output(InitialCivilization)
+)
+
+event_chain = (
+    event_prompt
+    | llm.with_structured_output(CivilizationEvent)
 )
