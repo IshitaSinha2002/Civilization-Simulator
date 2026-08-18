@@ -1,5 +1,10 @@
 from graph.state import CivilizationState
-from llm.chains import initial_civilization_chain, event_chain
+from llm.chains import (
+    initial_civilization_chain,
+    event_chain,
+    consequence_chain
+    )
+
 
 
 def simulate_year(state: CivilizationState) -> CivilizationState:
@@ -54,4 +59,72 @@ def generate_event(state: CivilizationState) -> CivilizationState:
         "event_history": state["event_history"] + [
             event.description
         ],
+    }
+
+def apply_event_consequences(
+    state: CivilizationState
+) -> CivilizationState:
+
+    if not state["current_event"]:
+        return state
+
+    consequences = consequence_chain.invoke(
+        {
+            "state": state,
+            "event": state["current_event"],
+        }
+    )
+
+    return {
+        **state,
+
+        "population": max(
+            0,
+            state["population"] + consequences.population_change
+        ),
+
+        "food": max(
+            0,
+            state["food"] + consequences.food_change
+        ),
+
+        "wealth": max(
+            0,
+            state["wealth"] + consequences.wealth_change
+        ),
+
+        "stability": max(
+            0,
+            min(
+                100,
+                state["stability"] + consequences.stability_change
+            )
+        ),
+
+        "military_strength": max(
+            0,
+            min(
+                100,
+                state["military_strength"]
+                + consequences.military_strength_change
+            )
+        ),
+
+        "technology_level": max(
+            1,
+            min(
+                100,
+                state["technology_level"]
+                + consequences.technology_change
+            )
+        ),
+
+        "infrastructure": max(
+            0,
+            min(
+                100,
+                state["infrastructure"]
+                + consequences.infrastructure_change
+            )
+        ),
     }
