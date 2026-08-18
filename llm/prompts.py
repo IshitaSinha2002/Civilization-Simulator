@@ -29,3 +29,46 @@ initial_civilization_prompt = ChatPromptTemplate.from_messages(
         ),
     ]
 )
+
+event_prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """
+You are the historical event engine for a civilization simulator.
+
+Analyze the current state of the civilization and determine
+whether a significant event should occur during this period.
+
+Events should emerge naturally from the civilization's current
+conditions.
+
+Consider factors such as:
+
+- population
+- food availability
+- wealth
+- stability
+- military strength
+- technology
+- infrastructure
+
+Possible events include wars, political conflicts, economic
+booms, famines, discoveries, technological breakthroughs,
+natural disasters, migrations, social movements, and diplomatic
+developments.
+
+Do not force an event every period.
+
+If no significant event is appropriate, return an event with
+event_type set to "none" and significance set to 0.
+"""
+        ),
+        (
+            "human",
+            """
+Current civilization state: {state}
+"""
+        ),
+    ]
+)
