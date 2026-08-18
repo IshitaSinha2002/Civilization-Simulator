@@ -1,7 +1,10 @@
 from pydantic import BaseModel, Field
 from langchain_groq import ChatGroq
 
-from llm.prompts import initial_civilization_prompt, event_prompt
+from llm.prompts import (
+    initial_civilization_prompt, 
+    event_prompt,
+    consequence_prompt)
 
 class InitialCivilization(BaseModel):
     civilization_name: str = Field(
@@ -60,6 +63,35 @@ class CivilizationEvent(BaseModel):
         description="Significance of the event from 0 to 100"
     )
 
+class EventConsequences(BaseModel):
+    population_change: int = Field(
+        description="Change in population caused by the event"
+    )
+
+    food_change: int = Field(
+        description="Change in food caused by the event"
+    )
+
+    wealth_change: int = Field(
+        description="Change in wealth caused by the event"
+    )
+
+    stability_change: int = Field(
+        description="Change in stability caused by the event"
+    )
+
+    military_strength_change: int = Field(
+        description="Change in military strength caused by the event"
+    )
+
+    technology_change: int = Field(
+        description="Change in technology level caused by the event"
+    )
+
+    infrastructure_change: int = Field(
+        description="Change in infrastructure caused by the event"
+    )
+
 llm = ChatGroq(
     model="openai/gpt-oss-120b",
     temperature=0.7
@@ -73,4 +105,9 @@ initial_civilization_chain = (
 event_chain = (
     event_prompt
     | llm.with_structured_output(CivilizationEvent)
+)
+
+consequence_chain = (
+    consequence_prompt
+    | llm.with_structured_output(EventConsequences)
 )
